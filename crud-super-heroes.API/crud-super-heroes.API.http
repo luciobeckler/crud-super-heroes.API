@@ -1,0 +1,6 @@
+@crud_super_heroes.API_HostAddress = http://localhost:5183
+
+GET {{crud_super_heroes.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
