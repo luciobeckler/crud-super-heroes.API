@@ -12,7 +12,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
+
+// Adição dos Services
 builder.Services.AddScoped<HeroiService>();
+builder.Services.AddScoped<SuperPoderesService>();
 
 var app = builder.Build();
 

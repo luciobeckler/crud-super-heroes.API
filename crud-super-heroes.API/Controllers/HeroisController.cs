@@ -24,12 +24,12 @@ namespace crud_super_heroes.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddHeroi([FromBody] HeroiDto heroiDto)
+        public async Task<IActionResult> AddHeroi([FromBody] HeroiESuperPoderesIdDto heroiDto)
         {
             try
             {
-                var novoHeroi = await _heroiService.AddHeroiAsync(heroiDto.Heroi, heroiDto.SuperPoderIds);
-                return CreatedAtAction(nameof(GetHerois), new { id = novoHeroi.Id }, novoHeroi);
+                var novoHeroi = await _heroiService.AddHeroiAsync(heroiDto);
+                return CreatedAtAction(nameof(GetHerois), novoHeroi);
             }
             catch (Exception ex)
             {
@@ -37,11 +37,51 @@ namespace crud_super_heroes.API.Controllers
             }
         }
 
-        [HttpGet("superpoderes")]
-        public async Task<IActionResult> GetSuperPoderes()
+        [HttpGet("{id}")]
+        public async Task<ActionResult<SuperPoderes>> GetHeroeById(int id)
         {
-            var superPoderes = await _heroiService.GetAllSuperPoderesAsync();
-            return Ok(superPoderes);
+            var herois = await _heroiService.GetAllHeroisAsync();
+
+            var heroiAlvo = herois.FirstOrDefault(sp => sp.Id == id);
+
+            if (heroiAlvo == null)
+            {
+                return NotFound("Super-Herói não encontrado.");
+            }
+
+            return Ok(heroiAlvo);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutHeroi(int id, HeroiESuperPoderesIdDto heroiESuperPoderesIdDto)
+        {
+            Heroi heroiAtualizado;
+
+            try
+            {
+                heroiAtualizado = await _heroiService.UpdateHeroiAsync(id, heroiESuperPoderesIdDto);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+
+            return Ok(heroiAtualizado);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteHeroi(int id)
+        {
+            try
+            {
+                await _heroiService.DeleteHeroiAsync(id);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+
+            return NoContent();
         }
     }
 }

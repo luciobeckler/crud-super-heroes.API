@@ -7,35 +7,31 @@ namespace crud_super_heroes.API.Models
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         public DbSet<Heroi> Herois { get; set; }
-        public DbSet<SuperPoder> SuperPoderes { get; set; }
+        public DbSet<SuperPoderes> SuperPoderes { get; set; }
         public DbSet<HeroiSuperPoder> HeroisSuperPoderes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configuração para HeroiSuperPoder
+            // Configuração da tabela HeroiSuperPoder (chave composta)
             modelBuilder.Entity<HeroiSuperPoder>()
                 .HasKey(hsp => new { hsp.HeroiId, hsp.SuperPoderId });
 
             modelBuilder.Entity<HeroiSuperPoder>()
-                .HasOne(hsp => hsp.Heroi)
-                .WithMany(h => h.HeroisSuperPoderes)
-                .HasForeignKey(hsp => hsp.HeroiId);
+                .HasOne<Heroi>()
+                .WithMany()
+                .HasForeignKey(hsp => hsp.HeroiId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<HeroiSuperPoder>()
-                .HasOne(hsp => hsp.SuperPoder)
-                .WithMany(sp => sp.HeroisSuperPoderes)
-                .HasForeignKey(hsp => hsp.SuperPoderId);
+                .HasOne<SuperPoderes>()
+                .WithMany()
+                .HasForeignKey(hsp => hsp.SuperPoderId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // Garantir unicidade do nome do herói
+            // Configuração opcional: Índice único no NomeHeroi
             modelBuilder.Entity<Heroi>()
-                .HasIndex(h => h.Nome)
+                .HasIndex(h => h.NomeHeroi)
                 .IsUnique();
-
-            // Seed data opcional para SuperPoderes
-            modelBuilder.Entity<SuperPoder>().HasData(
-                new SuperPoder { Id = 1, Nome = "Força", Descricao = "Super força" },
-                new SuperPoder { Id = 2, Nome = "Velocidade", Descricao = "Super velocidade" }
-            );
         }
     }
 }
