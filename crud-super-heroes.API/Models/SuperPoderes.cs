@@ -1,4 +1,6 @@
-﻿namespace crud_super_heroes.API.Models
+﻿using System.Text.Json.Serialization;
+
+namespace crud_super_heroes.API.Models
 {
         public class SuperPoderes
         {
@@ -6,5 +8,8 @@
             public string SuperPoder { get; set; }
             public string Descricao { get; set; }
 
-        }
+            [JsonIgnore]
+            public ICollection<HeroiSuperPoder> HeroisSuperPoderes { get; set; }  // Relacionamento com a tabela intermediária
+
+    }
 }
